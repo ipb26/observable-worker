@@ -5,6 +5,7 @@ const DEFAULT_DEBOUNCE_TIME = 1
 export interface BatcherOptions<T> {
 
     readonly debounceTime?: number | undefined
+    readonly maxItems?: number | undefined
     readonly flushTest?: ((items: readonly T[]) => boolean) | undefined
 
 }
@@ -33,12 +34,13 @@ export class Batcher<T> {
 
     add(item: T) {
         this.items.push(item)
+        if (this.options?.maxItems !== undefined && this.items.length >= this.options.maxItems) {
+            return this.process()
+        }
         if (this.options?.flushTest?.(this.items) ?? false) {
-            this.process()
+            return this.process()
         }
-        else {
-            this.debounced()
-        }
+        return this.debounced()
     }
 
 }
