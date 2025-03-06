@@ -18,11 +18,11 @@
         "value-or-factory": "^0.0.1"
     },
     "devDependencies": {
-        "rxjs": "^7.8.1",
         "@rollup/plugin-typescript": "^11.1.5",
         "@types/throttle-debounce": "^5.0.0",
         "@types/uuid": "^9.0.5",
         "rollup": "^4.0.2",
+        "rxjs": "^7.8.1",
         "typescript": "^5.2.2"
     },
     "peerDependencies": {
