@@ -1,7 +1,6 @@
 
 import { BehaviorSubject, Observable, filter, fromEvent, mergeMap, switchMap, takeUntil, tap, throwError } from "rxjs";
 import { HasEventTargetAddRemove } from "rxjs/internal/observable/fromEvent";
-import { ValueOrFactory, callOrGet } from "value-or-factory";
 import { Batcher, BatcherOptions } from "./batcher";
 
 /**
@@ -89,9 +88,9 @@ export namespace Channel {
      */
     export type Port<I, O> = HasEventTargetAddRemove<MessageEvent<I>> & { postMessage(value: O): void }
 
-    export function port<T extends Port<I, O>, I = never, O = unknown>(open: ValueOrFactory<T, []>, close?: ((port: T) => void) | undefined): Channel<I, O> {
+    export function port<T extends Port<I, O>, I = never, O = unknown>(open: T | (() => T), close?: ((port: T) => void) | undefined): Channel<I, O> {
         return () => {
-            const connection = callOrGet(open)
+            const connection = typeof open === "function" ? open() : open
             const closed = new BehaviorSubject(false)
             return {
                 observe: fromEvent(connection, "message", event => event.data).pipe(takeUntil(closed.pipe(filter(closed => closed), switchMap(() => throwError(() => new Error("This channel is closed.")))))),

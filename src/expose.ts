@@ -3,9 +3,6 @@ import { defer, filter, isObservable, map, materialize, mergeMap, of, share, tak
 import { Channel } from "./channel"
 import { Allowed, Request, Response, SubscribeRequest, Target } from "./types"
 
-//TODO get rid of p-defer library when youre done with migrating worker
-//also get rid of value-or-factory
-
 export interface ExposeConfig<T extends Target> {
 
     readonly target: T
