@@ -1,6 +1,6 @@
 import { customAlphabet } from "nanoid"
 import PLazy from "p-lazy"
-import { Observable, Subject, concatWith, dematerialize, filter, firstValueFrom, from, share, takeUntil, throwError } from "rxjs"
+import { Observable, Subject, concatWith, dematerialize, filter, firstValueFrom, from, takeUntil, throwError } from "rxjs"
 import { Channel } from "./channel"
 import { Proxied, Request, Response, Target } from "./types"
 
@@ -60,8 +60,7 @@ export function wrap<T extends Target>(options: WrapOptions): Remote<T> {
                         })
                     }
                 })
-                const shared = observable.pipe(share())
-                return new ObservableAndPromise(shared, PLazy.from(() => firstValueFrom(shared)))
+                return new ObservableAndPromise(observable, PLazy.from(() => firstValueFrom(observable)))
             }
         }
     }) as Proxied<T>
