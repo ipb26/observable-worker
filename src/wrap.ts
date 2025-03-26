@@ -27,11 +27,17 @@ export interface WrapOptions {
      */
     readonly channel: Channel<Response, Request>
 
+    /**
+     * An ID generator.
+     */
+    readonly generateId?: (() => string | number) | undefined
+
 }
 
 export function wrap<T extends Target>(options: WrapOptions): Remote<T> {
     const closed = new Subject<void>()
     const connection = options.channel()
+    const generateId = options.generateId ?? stringIdGenerator()
     const proxy = new Proxy({}, {
         get(_target, command) {
             if (typeof command === "symbol") {
@@ -92,6 +98,12 @@ export class ObservableAndPromise<T> extends Observable<T> implements PromiseLik
 /**
  * Generate a unique string ID.
  */
-export function generateId() {
-    return customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 22)()
+export function stringIdGenerator() {
+    return customAlphabet("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 22)
+}
+export function incrementingIdGenerator() {
+    var id = 0
+    return () => {
+        return id++
+    }
 }
